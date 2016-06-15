@@ -6,11 +6,11 @@ args = commandArgs(trailingOnly=TRUE)
 #h2 <- 0.75
 trait <- as.character(args[1])
 h2 <- as.numeric(args[2])
-batch <- as.numeric(args[3])
+#batch <- as.numeric(args[3])
 
-prev <- read.table(paste(trait,".age_prev",sep=""),header = T)
+prev <- read.table(paste("prev_files/",trait,".age_prev",sep=""),header = T)
 
-ped <- read.table(paste("ped_files/",trait,".ped",sep=""),header = T,colClasses = c(rep("character",5),rep("numeric",2)))
+ped <- read.table(paste("ped_files/",trait,".ped.gz",sep=""),header = T,colClasses = c(rep("character",5),rep("numeric",2)))
 fams <- unique(ped$FID)
 # 1 == female, 0 == male
 ped$FATHER[which(is.na(ped$FATHER))] <- ""
@@ -28,7 +28,7 @@ big_ped <- pedigree(id = ped$IID,
 
 
 liab_pheno <- data.frame()
-for(fam in fams){
+for(fam in fams[1:100]){
   fam_info <- ped[ped$FID == fam,]
   fam_ped <- pedigree(id = fam_info$IID,
                       dadid = fam_info$FATHER,
@@ -42,9 +42,9 @@ for(fam in fams){
   diag(sigma) <- rep(1,nrow(sigma))
   ids <- fam_ped$id
   
-  if(NA %in% fam_info$PHENO){
-    next
-  }
+  #if(NA %in% fam_info$PHENO){
+  #  next
+  #}
   prevs <- rep(0,length(ids))
   # upper
   l_upper <- rep(0,nrow(fam_info))
@@ -62,19 +62,25 @@ for(fam in fams){
     if(sex == "male"){ k <- prev[prev$AGE == age,2]}
     if(sex == "female"){ k <- prev[prev$AGE == age,3]}
     t <- qnorm(1-k)
-    if(pheno == 1){
+    if(is.na(pheno)){
       l_upper[i] <- Inf
-      l_lower[i] <- t
-      if(k == 0){
-        all_prev <- c(prev[,2],prev[,3])
-        min_k <- min(all_prev[all_prev!=0])
-        t <- qnorm(1-min_k)
-        l_lower[i] <- t
-      }
-    }
-    if(pheno == 0){
-      l_upper[i] <- t
       l_lower[i] <- -Inf
+    }
+    else{
+      if(pheno == 1){
+        l_upper[i] <- Inf
+        l_lower[i] <- t
+        if(k == 0){
+          all_prev <- c(prev[,2],prev[,3])
+          min_k <- min(all_prev[all_prev!=0])
+          t <- qnorm(1-min_k)
+          l_lower[i] <- t
+        }
+      }
+      if(pheno == 0){
+        l_upper[i] <- t
+        l_lower[i] <- -Inf
+      }
     }
   }
   liab <- rtmvnorm(500,
@@ -88,4 +94,5 @@ for(fam in fams){
   if(nrow(liab_pheno) %% 500 == 0){ print(nrow(liab_pheno))}
 }
 
-write.table(liab_pheno,paste("liab_files/",trait,".",batch,".liab",sep=""),col.names=F,row.names=F,quote=F)
+write.table(liab_pheno,paste("liab_files/",trait,".liab",sep=""),col.names=F,row.names=F,quote=F)
+
