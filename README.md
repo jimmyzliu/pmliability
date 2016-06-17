@@ -3,7 +3,7 @@ R script for estimating an individual's posterior mean liability for a disease g
 
 ### Getting started
 ```
-git clone https://github.com/jimmyzliu/moloco
+git clone https://github.com/jimmyzliu/pmliability
 
 Rscript make_liabs.R AD 0.75
 ```
