@@ -28,7 +28,7 @@ big_ped <- pedigree(id = ped$IID,
 
 
 liab_pheno <- data.frame()
-for(fam in fams[1:100]){
+for(fam in fams){
   fam_info <- ped[ped$FID == fam,]
   fam_ped <- pedigree(id = fam_info$IID,
                       dadid = fam_info$FATHER,
@@ -83,13 +83,14 @@ for(fam in fams[1:100]){
       }
     }
   }
-  liab <- rtmvnorm(500,
+  liab <- rtmvnorm(1100,
                    mean = rep(0,length(ids)),
                    sigma = sigma,
                    lower = l_lower,
                    upper = l_upper,
-                   algorithm = "gibbs")
-  liab <- colSums(liab)/500
+                   algorithm = "gibbs",
+                   burn.in = 100)
+  liab <- colSums(liab)/1000
   liab_pheno <- rbind(liab_pheno,data.frame(ids,liab))
   if(nrow(liab_pheno) %% 500 == 0){ print(nrow(liab_pheno))}
 }
