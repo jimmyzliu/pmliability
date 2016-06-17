@@ -83,13 +83,14 @@ for(fam in fams){
       }
     }
   }
-  liab <- rtmvnorm(1100,
+  liab <- rtmvnorm(1000,
                    mean = rep(0,length(ids)),
                    sigma = sigma,
                    lower = l_lower,
                    upper = l_upper,
                    algorithm = "gibbs",
-                   burn.in = 100)
+                   burn.in.samples = 100,
+                   thinning = 5)
   liab <- colSums(liab)/1000
   liab_pheno <- rbind(liab_pheno,data.frame(ids,liab))
   if(nrow(liab_pheno) %% 500 == 0){ print(nrow(liab_pheno))}
