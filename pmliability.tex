@@ -8,6 +8,10 @@
 \usepackage{courier}
 \usepackage{enumitem}
 \usepackage{hyperref}
+\usepackage{caption}
+\captionsetup{labelsep = none}
+\usepackage{graphicx,rotating}
+
 \usepackage[a4paper, total={5.5in, 8in}]{geometry}
 \begin{document}
 \title{Estimating disease liability from age, sex and family history}
@@ -79,7 +83,23 @@ To estimate a mean liability for an individual given their case-control status, 
 We use the \texttt{tmvtnorm} package in \texttt{R} to perform the Gibbs sampling. For each individual, the mean from 1000 random samples (with an additional burn-in of 100 samples) is taken to be the PML. The input files consist of a standard .ped format file with an additional column indicating age, as well as a file specifying prevalence rates for males and females at different age groups. For each family, the \texttt{kinship2} package is used to process the pedigree and construct the covariance matrix $\boldsymbol{\Sigma}$. A heritability of disease liability also needs to be defined.
 
 \section{Results}
-We estimated a PML for ~116,000 individuals in the UK Biobank across 12 phenotypes. All individuals reported the phenotypes of their mother and father. If the individual has one or more sibling
+We estimated a PML for ~116,000 individuals along with their parents and siblings in the UK Biobank across 12 phenotypes. All individuals reported the phenotypes of their mother, father and any siblings. While individuals reported their number of siblings, no information was provided as to which particular sibling was affected by disease, so we just assumed a single single affected or unaffected sibling depending on the reported phenotype. The age of parents were reported as either current age or age at death. No age was reported for siblings, so we approximate the age of the sibling to be the same as the genotyped individual.
+
+For each of the 12 common diseases, prevalences across age and sex were taken directly from the full UK Biobank data of ~500,000 individuals. We used both the age of sex of these individuals along with their parents to estimate disease prevalences. Due the small numbers, the ages considered were 40-100. The disease prevalences across the 12 phenotypes are shown in figure \ref{disease_k}. The distribution of estimated PMLs are shown in figure \ref{pml_dist}.
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{age_sex_k}
+  \caption{. Disease prevalence across age and sex for 12 diseases}
+  \label{disease_k}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{liab_dist}
+  \caption{. Histogram of posterior mean liabilities across 12 phenotypes}
+  \label{pml_dist}
+\end{figure}
+
+
 \end{document}
 
 
