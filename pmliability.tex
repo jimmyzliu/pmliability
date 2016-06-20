@@ -79,7 +79,7 @@ To estimate a mean liability for an individual given their case-control status, 
 We use the \texttt{tmvtnorm} package in \texttt{R} to perform the Gibbs sampling. For each individual, the mean from 1000 random samples (with an additional burn-in of 100 samples) is taken to be the PML. The input files consist of a standard .ped format file with an additional column indicating age, as well as a file specifying prevalence rates for males and females at different age groups. For each family, the \texttt{kinship2} package is used to process the pedigree and construct the covariance matrix $\boldsymbol{\Sigma}$. A heritability of disease liability also needs to be defined.
 
 \section{Results}
-We estimated a PML for ~116,000 individuals in the UK Biobank across 12 phenotypes. All individuals reported the phenotypes of their mother and father. 
+We estimated a PML for ~116,000 individuals in the UK Biobank across 12 phenotypes. All individuals reported the phenotypes of their mother and father. If the individual has one or more sibling
 \end{document}
 
 
