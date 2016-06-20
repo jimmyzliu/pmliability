@@ -59,8 +59,8 @@ for(fam in fams){
     if(age < min(prev$AGE)){ age <- min(prev$AGE)}
     if(age > max(prev$AGE)){ age <- max(prev$AGE)}
     k <- sum(prev[prev$AGE == age,c(2,3)])/2
-    if(sex == "male"){ k <- prev[prev$AGE == age,2]}
-    if(sex == "female"){ k <- prev[prev$AGE == age,3]}
+    if(sex == "male"){ k <- prev[prev$AGE == age,4]}
+    if(sex == "female"){ k <- prev[prev$AGE == age,5]}
     t <- qnorm(1-k)
     if(is.na(pheno)){
       l_upper[i] <- Inf
